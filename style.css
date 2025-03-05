@@ -1,0 +1,35 @@
+body {
+    background-color: rgb(53, 53, 53);
+    color: rgb(211, 211, 211);
+}
+
+form {
+    display: table;
+}
+
+p {
+    display: table-row;
+}
+
+label, input {
+    display: table-cell;
+    padding: 5px;
+}
+
+button {
+    margin-top: 10px;
+}
+
+#botaoTabela {
+    margin: 5px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: rgb(211, 211, 211);
+    text-decoration: underline;
+}
+
+#botaoTabela:hover {
+    cursor: pointer;
+    color: rgb(18, 71, 245);
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercicio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="listarUsuarios()">
+    <h1>Exercicio 10 <span class="material-symbols-outlined">event_note</span></h1>
+        </span>
+
+    <section>
+        <h2>Listar Dados</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Idade</th>
+                    <th>Ocupação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tbUsuarios"></tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Cadastrar Novo</h2>
+        <form onsubmit="cadastrarUsuario(event)">
+            <p>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" required>
+            </p>
+            <p>
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </p>
+            <p>
+                <label for="idade">Idade:</label>
+                <input type="number" id="idade" required>
+            </p>
+            <p>
+                <label for="ocupacao">Ocupação:</label>
+                <input type="text" id="ocupacao" required>
+            </p>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </section>
+
+    <script>
+        const mockURL = "https://67c858800acf98d07086235b.mockapi.io/usuarios";
+
+        function listarUsuarios() {
+            fetch(mockURL)
+                .then(response => response.json())
+                .then(data => {
+                    const tbUsuarios = document.getElementById("tbUsuarios");
+                    tbUsuarios.innerHTML = "";
+
+                    data.forEach(usuario => {
+                        const linha = document.createElement("tr");
+                        linha.innerHTML = `
+                            <td>${usuario.id}</td>
+                            <td>${usuario.nome}</td>
+                            <td>${usuario.email}</td>
+                            <td>${usuario.idade}</td>
+                            <td>${usuario.ocupacao}</td>
+                            <td><button id="botaoTabela" onclick="removerUsuario(${usuario.id})">Remover</button></td>
+                        `;
+                        tbUsuarios.appendChild(linha);
+                    });
+                })
+                .catch(error => console.error("Erro ao listar usuários:", error));
+        }
+
+        function cadastrarUsuario(event) {
+            event.preventDefault();
+
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const idade = parseInt(document.getElementById("idade").value);
+            const ocupacao = document.getElementById("ocupacao").value;
+
+            const novoUsuario = { nome, email, idade, ocupacao };
+
+            fetch(mockURL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(novoUsuario)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Erro ao cadastrar usuário");
+                    return response.json();
+                })
+                .then(() => {
+                    alert("Usuário cadastrado com sucesso!");
+                    listarUsuarios();
+                    limparFormulario();
+                })
+                .catch(error => console.error("Erro ao cadastrar usuário:", error));
+        }
+
+        function limparFormulario() {
+            document.getElementById("nome").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("idade").value = "";
+            document.getElementById("ocupacao").value = "";
+        }
+
+        function removerUsuario(id) {
+            fetch(`${mockURL}/${id}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Erro ao remover usuário");
+                    alert("Usuário removido com sucesso!");
+                    listarUsuarios();
+                })
+                .catch(error => console.error("Erro ao remover usuário:", error));
+        }
+    </script>
+</body>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=event_note"/>
+
+</html>
